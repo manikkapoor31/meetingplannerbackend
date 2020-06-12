@@ -4,7 +4,7 @@ const userController=require('./../controllers/userController')
 const appConfig=require('./../config/appConfig')
 
 module.exports.setRouter=(app)=>{
-    let baseUrl='${appConfig.version}/users';
+    let baseUrl='${appConfig.apiVersion}/users';
     //defining routes
 
     

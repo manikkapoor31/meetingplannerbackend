@@ -5,7 +5,7 @@ appConfig.env="dev";
 appConfig.db={
     uri:'mongodb://127.0.0.1:27017/meetingplannerdb'
 }
-appConfig.apiVersion='/api/v1';
+appConfig.apiVersion=`/api/v1`;
 module.exports={
     port:appConfig.port,
     allowedCorsOrigin:appConfig.allowedCorsOrigin,

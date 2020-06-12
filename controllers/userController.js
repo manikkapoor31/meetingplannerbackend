@@ -58,7 +58,7 @@ let editUser=(req,res)=>{
 
 // start user signup function
 let signupFunction=(req,res)=>{
-    let validateUseInput=()=>{
+    let validateUserInput=()=>{
         return new Promise((resolve,reject)=>{
             if (req.body.email){
                 if(!validateInput.Email(req.body.email)){
@@ -82,7 +82,7 @@ let signupFunction=(req,res)=>{
         })
     }
     let createUser=()=>{
-        return newPromise((resolve,reject)=>{
+        return new Promise((resolve,reject)=>{
             return new Promise((resolve,reject)=>{
                 UserModel.findOne({email:req.body.email}).exec((err,retrievedUserDetails)=>{
                     if(errr){
@@ -125,7 +125,9 @@ let signupFunction=(req,res)=>{
             })
         })
     }
-    validateUserInput(req,res).then(createUser).then((resolve)=>{
+    validateUserInput(req,res)
+    .then(createUser)
+    .then((resolve)=>{
         delete resolve.password
         let apiResponse=response.generate(false,'user created',200,null)
         res.send(apiResponse)
