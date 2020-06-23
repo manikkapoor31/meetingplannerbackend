@@ -7,6 +7,7 @@ const time=require('./../libs/timeLib')
 const validateInput= require('./../libs/paramsValidationLib')
 const check =require('./../libs/checkLib')
 const token=require('./../libs/tokenLib')
+const passwordLib=require('./../libs/generatePasswordLib')
 /* Models */
 const authModel=mongoose.model('auth')
 
@@ -85,7 +86,7 @@ let signupFunction=(req,res)=>{
         return new Promise((resolve,reject)=>{
             return new Promise((resolve,reject)=>{
                 UserModel.findOne({email:req.body.email}).exec((err,retrievedUserDetails)=>{
-                    if(errr){
+                    if(err){
                         logger.error(err.message,'userController:createUser',10)
                         let apiResponse=response.generate(true,'Failed to create user',500,null)
                         reject(apiResponse)
@@ -125,9 +126,7 @@ let signupFunction=(req,res)=>{
             })
         })
     }
-    validateUserInput(req,res)
-    .then(createUser)
-    .then((resolve)=>{
+    validateUserInput(req,res).then(createUser).then((resolve)=>{
         delete resolve.password
         let apiResponse=response.generate(false,'user created',200,null)
         res.send(apiResponse)
