@@ -1,7 +1,7 @@
 const response=require('./../libs/responseLib')
 let errorHandler=(err,req,res,next)=>{
     console.log("application error handler called")
-    let apiResponse=response.generate(true,'some error o(ccured at global level',500,null)
+    let apiResponse=response.generate(true,'some error occured at global level',500,null)
     res.send(apiResponse)
 }
 let notFoundHandler=(req,res,next)=>{

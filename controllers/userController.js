@@ -84,7 +84,6 @@ let signupFunction=(req,res)=>{
     }
     let createUser=()=>{
         return new Promise((resolve,reject)=>{
-            return new Promise((resolve,reject)=>{
                 UserModel.findOne({email:req.body.email}).exec((err,retrievedUserDetails)=>{
                     if(err){
                         logger.error(err.message,'userController:createUser',10)
@@ -124,7 +123,6 @@ let signupFunction=(req,res)=>{
                 })
 
             })
-        })
     }
     validateUserInput(req,res).then(createUser).then((resolve)=>{
         delete resolve.password
@@ -135,26 +133,34 @@ let signupFunction=(req,res)=>{
 }
 
 let loginFunction=(req,res)=>{
-    let findUser=()=>{
-        console.log("findUser");
-        return new Promise((resolve,reject)=>{
+    console.log('login called')
+    let findUser=()=>
+    {
+        console.log('finding user')
+        return new Promise((resolve,reject)=>
+        {
             if(req.body.email){
                 console.log("req body email is there");
                 console.log(req.body)
-                UserModel.findOne({email:req.body.email},(err,userDetails)=>{
-                    if(err){
+                UserModel.findOne({email:req.body.email},(err,userDetails)=>
+                {
+                    if(err)
+                    {
                         console.log(err)
                         logger.error('Failed To Retrieve User Data','userController:findUser()',10)
                         let apiResponse=response.generate(true,'Failed to Find User Details',500,null)
                         reject(apiResponse)
                     }
-                    else if(check.isEmpty(userDetails)){
+                    else if(check.isEmpty(userDetails))
+                    {
                         logger.error('No user found','usercontroller',findUser(),7)
                         let apiResponse=response.generate(true,'No user details found',404,null)
                         reject(apiResponse)
                     }
-                    else{
+                    else
+                    {
                         logger.info('User Found','userController:findUser()',10)
+                        console.log(userDetails)
                         resolve(userDetails)
                     }
                 })
@@ -167,18 +173,25 @@ let loginFunction=(req,res)=>{
       })
 
     }
-    let validatePassword=(retrievedUserDetails)=>{
+    let validatePassword=(retrievedUserDetails)=>
+    {
         console.log('Validate Password')
-        return new Promise((resolve,reject)=>{
-            passwordLib.comparePassword(req.body.password,retreivedUserDetails.password,(err,isMatch)=>{
-                if(err){
+        console.log(retrievedUserDetails.password)
+        console.log(req.body.password)
+        return new Promise((resolve,reject)=>
+        {
+            passwordLib.comparePassword(req.body.password,retrievedUserDetails.password,(err,isMatch)=>
+            {
+                if(err)
+                {
                     console.log(err)
                     logger.error(err.message,'userController:validatePassword()',10)
                     let apiResponse=response.generate(true,'Login Failed',500,null)
                     reject(apiResponse)
                 }
-                else if(isMatch){
-                    let retrievedUserDetailsObj=retrievedUserDetails.toObjecct()
+                else if(isMatch)
+                {
+                    let retrievedUserDetailsObj=retrievedUserDetails.toObject()
                     delete retrievedUserDetailsObj.password
                     delete retrievedUserDetailsObj._id
                     delete retrievedUserDetailsObj.__v
@@ -186,7 +199,8 @@ let loginFunction=(req,res)=>{
                     delete retrievedUserDetailsObj.modifiedOn
                     resolve(retrievedUserDetailsObj)
                 }
-                else{
+                else
+                {
                     logger.info('Login Failed Due to Invalid Password','userController:validatePassword()',10)
                     let apiResponse=response.generate(true,'Wrong Password.login Failed',400,null)
                     reject(apiResponse)
@@ -195,14 +209,23 @@ let loginFunction=(req,res)=>{
             })
         })
     }
-    let generateToken=(userDetails)=>{
+    let generateToken=(userDetails)=>
+    {
         console.log('generate token')
-        return new Promise((resolve,reject)=>{
-            generateToken.generateToken(userDetails,(err,tokenDetails)=>{
-                if(err){
+        return new Promise((resolve,reject)=>
+        {
+            token.generateToken(userDetails,(err,tokenDetails)=>
+            {
+                if(err)
+                {
                     console.log(err)
                     let apiResponse=response.generate(true,'Failed to Generate Token',500,null)
                     reject(apiResponse)
+                }
+                else{
+                    tokenDetails.userId=userDetails.userId
+                    tokenDetails.userDetails=userDetails
+                    resolve(tokenDetails)
                 }
             }).catch((err)=>{
                 console.log('errorhandler')
@@ -212,16 +235,22 @@ let loginFunction=(req,res)=>{
             })
         })
     }
-    let saveToken=(tokenDetails)=>{
+    let saveToken=(tokenDetails)=>
+    {
         console.log("save token")
-        return new promise((resolve,reject)=>{
-            authModel.findOne({userId:tokenDetails.userId},(err,retrievedTokenDetails)=>{
-                if(err){
+        return new Promise((resolve,reject)=>{
+            console.log("inside token")
+            authModel.findOne({userId:tokenDetails.userId},(err,retrievedTokenDetails)=>
+            {
+                console.log("inside 1")
+                if(err)
+                {   
                     console.log(err.message,'userController:saveToken',10)
                     let apiResponse=response.generate(true,'Failed to generate Token',500,null)
                     reject(apiResponse)
                 }
-                else if (check.isEmpty(retrievedTokenDetails)){
+                else if (check.isEmpty(retrievedTokenDetails))
+                {
                     let newauthToken=new authModel({
                         userId:tokenDetails.userId,
                         authToken:tokenDetails.token,
@@ -244,18 +273,22 @@ let loginFunction=(req,res)=>{
                         }
                     })
                 }
-                else{
+                else
+                {
                     retrievedTokenDetails.authToken=tokenDetails.token;
                     retrievedTokenDetails.tokenSecret=tokenDetails.tokenSecret;
                     retrievedTokenDetails.tokenGenerationTime=tokenDetails.tokenGenerationTime;
-                    retrievedTokenDetails.save((err,newTokenDetails)=>{
-                        if(err){
+                    retrievedTokenDetails.save((err,newTokenDetails)=>
+                    {
+                        if(err)
+                        {
                             console.log(err);
                             logger.error(err.message,'userController:saveToken',10);
                             let apiResponse=response.generate(true,'Failed to  Generate Token',500,null);
                             reject(apiResponse)
                         }
-                        else{
+                        else
+                        {
                             let responseBody={
                                 authToken: newTokenDetails.authToken,
                                 userDetails:tokenDetails.userDetail
@@ -267,7 +300,9 @@ let loginFunction=(req,res)=>{
                 }
             })
         })
-        findUser(req,res).then(validatePassword).then(generateToken).then(saveToken).then((resolve)=>
+    
+    }
+    findUser().then(validatePassword).then(generateToken).then(saveToken).then((resolve)=>
         {
             let apiResponse=response.generate(false,'login successful',200,resolve)
             res.send(200)
@@ -278,11 +313,8 @@ let loginFunction=(req,res)=>{
             res.status(err.status)
             res.send(err)
         }) 
-    }
-    
 
 }
-
 //function to logout user
 //auth params:userId
 let logout=(req,res)=>{

@@ -72,7 +72,7 @@ let isAuthorized = (req, res, next) => {
       let apiKey = req.params.apiKey || req.query.apiKey || req.body.apiKey || req.header('apiKey')
         let options = {
           method:'GET',
-          uri:`https://gateways.edwisor.com/user-gateway/api/v1/user/project/auth?edProjectAuth=${apiKey}`
+          //uri:`https://gateways.edwisor.com/user-gateway/api/v1/user/project/auth?edProjectAuth=${apiKey}`
         }
         request(options,(err,response,body)=>{
          // console.log(body)

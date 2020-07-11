@@ -16,8 +16,12 @@ let userSchema = new Schema({
     },
     lastName:{
         type:String,
-        default:'passskdajakdjkadsj'
+        default:''
     },
+    password: {
+      type: String,
+      default: 'passskdajakdjkadsj'
+    }, 
     email:{
         type:String,
         default:''

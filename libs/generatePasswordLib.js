@@ -13,7 +13,7 @@ let comparePassword=(oldPassword,hashpassword,cb)=>{
     bcrypt.compare(oldPassword,hashpassword,(err,res)=>{
         if(err)
         {
-            logger.error(err.message,'Comparison Error')
+            logger.error(err.message,'Comparison Error',5)
             cb(err,null)
         }   
         else{
